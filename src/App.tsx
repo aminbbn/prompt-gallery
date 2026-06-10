@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Header } from './components/Header';
 import { AdminPanelModal } from './components/AdminPanelModal';
 import { FilterBar } from './components/FilterBar';
@@ -168,6 +168,8 @@ export default function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<CategoryType>('All');
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+
+
 
   // Infinite scroll load more pagination states
   const [itemsToShow, setItemsToShow] = useState(12);
@@ -497,7 +499,7 @@ export default function App() {
             >
               A premium workspace cataloging high-fidelity prompt syntaxes. Click on prompts to immediately copy, or inspect parameters to modify seeds and aspect ratios dynamically.
             </motion.p>
-
+ 
             {/* Centered AI Search Input Container */}
             <motion.div
               initial={{ opacity: 0, y: 20, scale: 0.98 }}
@@ -544,7 +546,7 @@ export default function App() {
                     className="w-full bg-transparent py-4 pl-3 pr-28 text-xs md:text-sm focus:outline-none font-mono text-zinc-900 dark:text-zinc-100 placeholder-zinc-500 dark:placeholder-zinc-300"
                     placeholder="Ask AI to find prompts..."
                   />
-
+ 
                   <div className="absolute right-2 flex items-center gap-1.5">
                     {searchQuery && (
                       <button
@@ -560,9 +562,11 @@ export default function App() {
                         <X size={14} weight="light" />
                       </button>
                     )}
-
+ 
                     <button
-                      onClick={handleAiSearch}
+                      onClick={() => {
+                        handleAiSearch();
+                      }}
                       disabled={isAiSearching || !searchQuery.trim()}
                       className={`rounded-full px-4 py-2 text-[10px] md:text-xs font-mono font-bold flex items-center gap-1.5 transition-all duration-300 active:scale-95 border ${
                         theme === 'dark'
@@ -576,7 +580,7 @@ export default function App() {
                   </div>
                 </div>
               </div>
-
+ 
               {/* Dynamic feedback explanation label */}
               <AnimatePresence>
                 {aiSearchExplanation && (

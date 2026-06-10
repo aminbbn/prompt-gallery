@@ -520,17 +520,7 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
               </p>
             </div>
 
-            {/* Quick-copy copyable credentials banner */}
-            <div className={`w-full rounded-lg border p-3 font-mono text-[10px] text-left leading-relaxed ${
-              isDark ? 'bg-zinc-900/20 border-zinc-900 text-zinc-400' : 'bg-slate-50 border-slate-200 text-slate-700'
-            }`}>
-              <div className="flex items-center gap-1.5 text-[11px] font-bold text-blue-500 mb-1">
-                <Key size={12} />
-                <span>SYS CREDENTIAL DEMODULATOR:</span>
-              </div>
-              <p>USERNAME: <span className="font-bold text-zinc-100 dark:text-white selection:bg-blue-600 bg-zinc-900 px-1 rounded">admin</span></p>
-              <p className="mt-0.5">PASSWORD: <span className="font-bold text-zinc-100 dark:text-white selection:bg-blue-600 bg-zinc-900 px-1 rounded">unlock_the_vault_2026</span></p>
-            </div>
+
 
             <form onSubmit={handleLoginSubmit} className="w-full space-y-3 pt-2">
               {loginError && (
