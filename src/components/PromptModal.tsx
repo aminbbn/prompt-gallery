@@ -136,10 +136,10 @@ export const PromptModal: React.FC<PromptModalProps> = ({
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.96, y: 10 }}
         transition={{ type: 'spring', stiffness: 350, damping: 28, mass: 0.9 }}
-        className={`relative z-10 flex h-full max-h-[90vh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl border md:h-auto md:max-h-[85vh] md:flex-row ${
+        className={`relative z-10 flex h-full max-h-[90vh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl md:h-auto md:max-h-[85vh] md:flex-row ${
           isDark
-            ? 'border-zinc-800 bg-zinc-900/90 text-zinc-100 shadow-[0_20px_50px_rgba(0,0,0,0.6)]'
-            : 'border-zinc-200 bg-white/95 shadow-2xl text-zinc-900'
+            ? 'border border-zinc-800 bg-zinc-900/90 text-zinc-100 shadow-[0_20px_50px_rgba(0,0,0,0.6)]'
+            : 'border border-zinc-200 bg-white/95 shadow-2xl text-zinc-900'
         }`}
         style={{
           backdropFilter: 'blur(30px) saturate(120%)',
@@ -239,7 +239,7 @@ export const PromptModal: React.FC<PromptModalProps> = ({
               style={{ backdropFilter: 'blur(10px)' }}
               >
                 <p className={`font-mono text-xs leading-relaxed break-anywhere pr-10 ${
-                  isDark ? 'text-zinc-200' : 'text-zinc-805'
+                  isDark ? 'text-zinc-200' : 'text-zinc-800'
                 }`}>
                   {activePrompt}
                 </p>
@@ -247,7 +247,7 @@ export const PromptModal: React.FC<PromptModalProps> = ({
                   onClick={() => handleCopy(activePrompt)}
                   className={`absolute top-3.5 right-3.5 rounded-lg border p-2 transition-all duration-300 active:scale-95 ${
                     isDark
-                      ? 'border-zinc-800 bg-zinc-905 text-zinc-400 hover:border-zinc-650 hover:text-white'
+                      ? 'border-zinc-800 bg-zinc-900 text-zinc-400 hover:border-zinc-700 hover:text-white'
                       : 'border-zinc-200 bg-white text-zinc-500 hover:border-zinc-950 hover:text-zinc-950'
                   }`}
                   title="Copy prompt"
@@ -316,7 +316,7 @@ export const PromptModal: React.FC<PromptModalProps> = ({
               onClick={onClose}
               className={`rounded-lg border py-3.5 px-6 font-mono text-[11px] font-bold tracking-wider transition-all duration-300 active:scale-[0.98] ${
                 isDark
-                  ? 'border-zinc-800 bg-zinc-950/30 text-zinc-405 hover:border-zinc-700 hover:text-white'
+                  ? 'border-zinc-800 bg-zinc-950/30 text-zinc-400 hover:border-zinc-700 hover:text-white'
                   : 'border-zinc-200 bg-white text-zinc-500 hover:border-zinc-950 hover:text-zinc-950'
               }`}
             >

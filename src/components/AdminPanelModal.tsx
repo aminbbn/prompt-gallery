@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { 
   X, Shield, Trash, PencilSimple, Plus, Check, Lock, Key, SignIn, 
   Database, Tag, Image as ImageIcon, SquaresFour, Sparkle, FolderOpen, Browser,
@@ -466,19 +467,19 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      {/* Black ambient backdrop mask */}
-      <div 
-        className="absolute inset-0 bg-zinc-950/85 backdrop-blur-md transition-opacity"
-        onClick={onClose}
-      />
-
-      {/* Main Administrative Window Chrome */}
-      <div className={`relative z-10 w-full max-w-3xl overflow-hidden rounded-xl border flex flex-col max-h-[88vh] transition-all duration-300 ${
+    <motion.div 
+      initial={{ opacity: 0, y: '100dvh' }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: '100dvh' }}
+      transition={{ type: 'spring', stiffness: 220, damping: 26 }}
+      className={`fixed inset-0 z-50 w-screen h-[100dvh] flex flex-col overflow-hidden select-none ${
         isDark
-          ? 'border-zinc-800 bg-zinc-950 text-zinc-100 shadow-[0_30px_70px_rgba(0,0,0,0.85)]'
-          : 'border-zinc-200 bg-white text-zinc-900 shadow-2xl'
-      }`}>
+          ? 'bg-zinc-950 text-zinc-100'
+          : 'bg-zinc-50 text-zinc-900'
+      }`}
+    >
+      {/* Main Administrative Window Chrome */}
+      <div className="relative w-full h-full flex flex-col overflow-hidden">
         
         {/* TOP STATUS BAR CONTAINER */}
         <div className={`flex items-center justify-between border-b px-6 py-4 select-none ${
@@ -506,12 +507,17 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
 
         {/* LOCKED STATE GATE */}
         {!isLoggedIn ? (
-          <div className="p-8 md:p-12 flex flex-col items-center justify-center text-center max-w-md mx-auto space-y-6">
-            <div className={`p-4 rounded-xl border ${
-              isDark ? 'bg-zinc-900/40 border-zinc-900 text-blue-400' : 'bg-zinc-50 border-zinc-200 text-zinc-700'
+          <div className="flex-grow flex flex-col items-center justify-center text-center p-8 md:p-12">
+            <div className={`w-full max-w-md p-8 rounded-2xl border flex flex-col items-center justify-center text-center space-y-6 ${
+              isDark
+                ? 'border-zinc-800 bg-zinc-900/10'
+                : 'border-zinc-200 bg-white shadow-lg'
             }`}>
-              <Lock size={32} className="animate-bounce" />
-            </div>
+              <div className={`p-4 rounded-xl border ${
+                isDark ? 'bg-zinc-900/40 border-zinc-900 text-blue-400' : 'bg-zinc-50 border-zinc-200 text-zinc-700'
+              }`}>
+                <Lock size={32} className="animate-bounce" />
+              </div>
 
             <div className="space-y-2">
               <h3 className="font-sans text-lg font-bold tracking-tight">Vault Credentials Required</h3>
@@ -568,7 +574,8 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
               </button>
             </form>
           </div>
-        ) : (
+        </div>
+      ) : (
           /* AUTHORIZED SYSTEM LAYOUT */
           <>
             {/* TABS SELECTOR STRIP */}
@@ -876,9 +883,7 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
               {/* TAB 2: PROMPT BANK LISTING */}
               {activeTab === 'bank' && (
                 <div className="space-y-5">
-                  {!claimingBankItem ? (
-                    <>
-                      <div className="text-left space-y-1">
+                  <div className="text-left space-y-1">
                         <h3 className="font-sans text-sm font-bold tracking-tight text-zinc-200 uppercase">
                           The Ready Prompt Bank Index
                         </h3>
@@ -1155,8 +1160,7 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
                               return range;
                             })()}
 
-                            {/* Next page */}
-                            <button
+                                                        <button
                               onClick={() => setBankPage(Math.min(totalBankPages, currentBankPage + 1))}
                               disabled={currentBankPage === totalBankPages}
                               className={`rounded p-1 border font-mono text-xs transition-all ${
@@ -1172,156 +1176,6 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
                           </div>
                         </div>
                       )}
-                    </>
-                  ) : (
-                    /* DEPLOY BANK ITEM MAPPER FORM */
-                    <div className="max-w-xl mx-auto border rounded-xl p-5 text-left space-y-4 shadow-xl select-none">
-                      <div className="flex items-center justify-between border-b pb-3 border-zinc-900">
-                        <div className="flex items-center gap-2">
-                          <Sparkle size={16} className="text-blue-400 animate-pulse" />
-                          <h4 className="font-mono text-xs font-bold uppercase tracking-wider text-blue-400">
-                            Deploying Bank Prompt with Graphic
-                          </h4>
-                        </div>
-                        <button 
-                          onClick={() => setClaimingBankItem(null)} 
-                          className="font-mono text-[10px] text-zinc-500 hover:text-white border border-zinc-900 rounded px-2 py-0.5"
-                        >
-                          BACK TO BANK
-                        </button>
-                      </div>
-
-                      <div className="p-3.5 rounded-lg border font-mono text-[11px] leading-relaxed bg-zinc-900/30 border-blue-900/20">
-                        <p className="font-bold text-blue-400">PROMPT PRESET:</p>
-                        <p className="mt-1 text-zinc-300">"{claimingBankItem.prompt}"</p>
-                      </div>
-
-                      <form onSubmit={handleMapDeploy} className="space-y-4">
-                        {claimError && (
-                          <p className="font-mono text-[10px] text-red-500">{claimError}</p>
-                        )}
-
-                        <div className="grid grid-cols-2 gap-4">
-                          <div>
-                            <label className="font-mono text-[9px] uppercase tracking-wider text-zinc-400 block mb-1">Mapped Title</label>
-                            <input
-                              type="text"
-                              value={claimingBankItem.title}
-                              disabled
-                              className="w-full rounded-lg border border-zinc-800 bg-zinc-900 opacity-60 px-3 py-1.5 font-sans text-xs text-zinc-400"
-                            />
-                          </div>
-                          <div>
-                            <label className="font-mono text-[9px] uppercase tracking-wider text-zinc-400 block mb-1">Mapping Category</label>
-                            <input
-                              type="text"
-                              value={claimingBankItem.category}
-                              disabled
-                              className="w-full rounded-lg border border-zinc-800 bg-zinc-900 opacity-60 px-3 py-1.5 font-mono text-xs text-zinc-400"
-                            />
-                          </div>
-                        </div>
-
-                        <div>
-                          <label className="font-mono text-[9px] uppercase tracking-wider text-zinc-400 flex items-center justify-between block mb-1">
-                            <span>Image URL (or keep empty for premium auto seed)</span>
-                            <button
-                              type="button"
-                              onClick={() => handleGenerateRandomUrl('claim', claimingBankItem.suggestedKeyword)}
-                              className="text-[9px] text-blue-400 hover:underline font-mono uppercase"
-                            >
-                              Auto-Generate Picsum Seed
-                            </button>
-                          </label>
-                          <input
-                            type="text"
-                            placeholder="https://images.unsplash.com/photo-..."
-                            value={claimImageUrl}
-                            onChange={(e) => setClaimImageUrl(e.target.value)}
-                            className={`w-full rounded-lg border px-3 py-1.5 font-mono text-xs focus:outline-none ${
-                              isDark ? 'border-zinc-800 bg-zinc-950 text-white' : 'border-zinc-200 bg-white text-zinc-900'
-                            }`}
-                          />
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-4">
-                          <div>
-                            <label className="font-mono text-[9px] uppercase tracking-wider text-zinc-400 block mb-1">Tags / Labels (comma sep)</label>
-                            <input
-                              type="text"
-                              placeholder="e.g. vintage, atmospheric, blue"
-                              value={claimTags}
-                              onChange={(e) => setClaimTags(e.target.value)}
-                              className={`w-full rounded-lg border px-3 py-1.5 font-mono text-xs focus:outline-none ${
-                                isDark ? 'border-zinc-800 bg-zinc-950 text-white' : 'border-zinc-200 bg-white text-zinc-900'
-                              }`}
-                            />
-                          </div>
-                          <div>
-                            <label className="font-mono text-[9px] uppercase tracking-wider text-zinc-400 block mb-1">Author Credit Attribution</label>
-                            <input
-                              type="text"
-                              placeholder="System Curator"
-                              value={claimAuthor}
-                              onChange={(e) => setClaimAuthor(e.target.value)}
-                              className={`w-full rounded-lg border px-3 py-1.5 font-sans text-xs focus:outline-none ${
-                                isDark ? 'border-zinc-800 bg-zinc-950 text-white' : 'border-zinc-200 bg-white text-zinc-900'
-                              }`}
-                            />
-                          </div>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-4">
-                          <div>
-                            <label className="font-mono text-[9px] uppercase tracking-wider text-zinc-400 block mb-1">Target Engine Model</label>
-                            <select
-                              value={claimModel}
-                              onChange={(e) => setClaimModel(e.target.value)}
-                              className={`w-full rounded-lg border px-3 py-1.5 font-mono text-xs focus:outline-none ${
-                                isDark ? 'border-zinc-800 bg-zinc-950 text-white' : 'border-zinc-200 bg-white'
-                              }`}
-                            >
-                              <option value="Flux Dev">FLUX DEV</option>
-                              <option value="Flux Schnell">FLUX SCHNELL</option>
-                              <option value="Midjourney v6.0">MIDJOURNEY V6.0</option>
-                              <option value="Stable Diffusion 3">STABLE DIFFUSION 3</option>
-                            </select>
-                          </div>
-                          <div>
-                            <label className="font-mono text-[9px] uppercase tracking-wider text-zinc-400 block mb-1">Aspect Ratio</label>
-                            <select
-                              value={claimRatio}
-                              onChange={(e) => setClaimRatio(e.target.value)}
-                              className={`w-full rounded-lg border px-3 py-1.5 font-mono text-xs focus:outline-none ${
-                                isDark ? 'border-zinc-800 bg-zinc-950 text-white' : 'border-zinc-200 bg-white'
-                              }`}
-                            >
-                              <option value="1:1">1:1 (SQUARE)</option>
-                              <option value="16:9">16:9 (WIDESCREEN)</option>
-                              <option value="4:3">4:3 (LANDSCAPE)</option>
-                              <option value="4:5">4:5 (PORTRAIT)</option>
-                            </select>
-                          </div>
-                        </div>
-
-                        <div className="flex gap-2 justify-end pt-3">
-                          <button
-                            type="button"
-                            onClick={() => setClaimingBankItem(null)}
-                            className="px-4 py-2 rounded-lg border font-mono text-xs font-bold text-zinc-400 hover:text-white active:scale-95 transition-all"
-                          >
-                            CANCEL
-                          </button>
-                          <button
-                            type="submit"
-                            className="px-5 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-mono text-xs font-bold active:scale-[0.98] transition-all"
-                          >
-                            DEPLOY AND PUBLISH
-                          </button>
-                        </div>
-                      </form>
-                    </div>
-                  )}
                 </div>
               )}
 
@@ -1511,6 +1365,196 @@ export const AdminPanelModal: React.FC<AdminPanelModalProps> = ({
           SECURE SECTOR ACCESS // KEY CHAIN SYSTEM: AUTOSYNCED_OK // ACTIVE CREDENTIAL_STATE: {isLoggedIn ? 'DEBUT' : 'GATED'}
         </div>
       </div>
-    </div>
+
+      <AnimatePresence>
+        {claimingBankItem && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-6 bg-zinc-950/85 backdrop-blur-md select-none"
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 15 }}
+              transition={{ type: 'spring', stiffness: 350, damping: 28 }}
+              className={`relative z-10 w-full max-w-2xl overflow-hidden rounded-2xl border p-6 md:p-8 text-left space-y-5 shadow-[0_25px_60px_rgba(0,0,0,0.85)] ${
+                isDark
+                  ? 'border-zinc-800 bg-zinc-900/95 text-zinc-100 shadow-[inset_0_1px_1px_rgba(255,255,255,0.15)]'
+                  : 'border-zinc-200 bg-white text-zinc-900 shadow-[0_20px_50px_rgba(0,0,0,0.15)]'
+              }`}
+              style={{ backdropFilter: 'blur(30px) saturate(120%)' }}
+            >
+              {/* Header of mapping modal */}
+              <div className="flex items-center justify-between border-b pb-3.5 border-zinc-200 dark:border-zinc-800">
+                <div className="flex items-center gap-2">
+                  <Sparkle size={18} className="text-blue-500 animate-pulse animate-duration-2000" />
+                  <h4 className="font-sans text-md font-bold text-zinc-900 dark:text-zinc-100">
+                    Deploy Bank Prompt with Graphic
+                  </h4>
+                </div>
+                <button 
+                  onClick={() => setClaimingBankItem(null)} 
+                  className={`rounded-full p-2 transition-colors ${
+                    isDark ? 'text-zinc-400 hover:bg-zinc-800 hover:text-white' : 'text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900'
+                  }`}
+                >
+                  <X size={16} />
+                </button>
+              </div>
+
+              <div className={`p-4 rounded-xl border font-mono text-xs leading-relaxed ${
+                isDark ? 'bg-zinc-950/60 border-zinc-800 text-zinc-300' : 'bg-zinc-50 border-zinc-200 text-zinc-700'
+              }`}>
+                <p className="font-bold text-blue-500 uppercase tracking-widest text-[10px] mb-1">PROMPT PRESET:</p>
+                <p className="italic">"{claimingBankItem.prompt}"</p>
+              </div>
+
+              <form onSubmit={handleMapDeploy} className="space-y-4">
+                {claimError && (
+                  <p className="font-mono text-xs text-red-505 bg-red-950/15 border border-red-900/50 py-1.5 px-3 rounded">{claimError}</p>
+                )}
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="font-mono text-[9px] uppercase tracking-wider text-zinc-400 block mb-1.5">Mapped Title</label>
+                    <input
+                      type="text"
+                      value={claimingBankItem.title}
+                      disabled
+                      className="w-full rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900/55 opacity-70 px-3 py-2 font-sans text-xs text-zinc-500 dark:text-zinc-400 focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="font-mono text-[9px] uppercase tracking-wider text-zinc-400 block mb-1.5">Mapping Category</label>
+                    <input
+                      type="text"
+                      value={claimingBankItem.category}
+                      disabled
+                      className="w-full rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900/55 opacity-70 px-3 py-2 font-mono text-xs text-zinc-500 dark:text-zinc-400 focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="font-mono text-[9px] uppercase tracking-wider text-zinc-400 block">
+                      Image URL (or keep empty for premium auto seed)
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => handleGenerateRandomUrl('claim', claimingBankItem.suggestedKeyword)}
+                      className="text-[9px] text-blue-500 hover:underline font-mono uppercase tracking-wider"
+                    >
+                      Auto-Generate Picsum Seed
+                    </button>
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="https://images.unsplash.com/photo-..."
+                    value={claimImageUrl}
+                    onChange={(e) => setClaimImageUrl(e.target.value)}
+                    className={`w-full rounded-lg border px-3 py-2 font-mono text-xs focus:outline-none transition-all ${
+                      isDark 
+                        ? 'border-zinc-800 bg-zinc-950 text-white focus:border-blue-500' 
+                        : 'border-zinc-200 bg-white text-zinc-900 focus:border-zinc-950'
+                    }`}
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="font-mono text-[9px] uppercase tracking-wider text-zinc-400 block mb-1.5">Tags / Labels (comma sep)</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. vintage, atmospheric, blue"
+                      value={claimTags}
+                      onChange={(e) => setClaimTags(e.target.value)}
+                      className={`w-full rounded-lg border px-3 py-2 font-mono text-xs focus:outline-none transition-all ${
+                        isDark 
+                          ? 'border-zinc-800 bg-zinc-950 text-white focus:border-blue-500' 
+                          : 'border-zinc-200 bg-white text-zinc-900 focus:border-zinc-950'
+                      }`}
+                    />
+                  </div>
+                  <div>
+                    <label className="font-mono text-[9px] uppercase tracking-wider text-zinc-400 block mb-1.5">Author Credit Attribution</label>
+                    <input
+                      type="text"
+                      placeholder="System Curator"
+                      value={claimAuthor}
+                      onChange={(e) => setClaimAuthor(e.target.value)}
+                      className={`w-full rounded-lg border px-3 py-2 font-sans text-xs focus:outline-none transition-all relative z-[110] ${
+                        isDark 
+                          ? 'border-zinc-800 bg-zinc-950 text-white focus:border-blue-500' 
+                          : 'border-zinc-200 bg-white text-zinc-900 focus:border-zinc-950'
+                      }`}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="font-mono text-[9px] uppercase tracking-wider text-zinc-400 block mb-1.5">Target Engine Model</label>
+                    <select
+                      value={claimModel}
+                      onChange={(e) => setClaimModel(e.target.value)}
+                      className={`w-full rounded-lg border px-3 py-2 font-mono text-xs focus:outline-none transition-all ${
+                        isDark 
+                          ? 'border-zinc-800 bg-zinc-950 text-white focus:border-blue-500' 
+                          : 'border-zinc-200 bg-white focus:border-zinc-950'
+                      }`}
+                    >
+                      <option value="Flux Dev">FLUX DEV</option>
+                      <option value="Flux Schnell">FLUX SCHNELL</option>
+                      <option value="Midjourney v6.0">MIDJOURNEY V6.0</option>
+                      <option value="Stable Diffusion 3">STABLE DIFFUSION 3</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="font-mono text-[9px] uppercase tracking-wider text-zinc-400 block mb-1.5">Aspect Ratio</label>
+                    <select
+                      value={claimRatio}
+                      onChange={(e) => setClaimRatio(e.target.value)}
+                      className={`w-full rounded-lg border px-3 py-2 font-mono text-xs focus:outline-none transition-all ${
+                        isDark 
+                          ? 'border-zinc-800 bg-zinc-950 text-white focus:border-blue-500' 
+                          : 'border-zinc-200 bg-white focus:border-zinc-950'
+                      }`}
+                    >
+                      <option value="1:1">1:1 (SQUARE)</option>
+                      <option value="16:9">16:9 (WIDESCREEN)</option>
+                      <option value="4:3">4:3 (LANDSCAPE)</option>
+                      <option value="4:5">4:5 (PORTRAIT)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="flex gap-2.5 justify-end pt-3">
+                  <button
+                    type="button"
+                    onClick={() => setClaimingBankItem(null)}
+                    className={`px-4.5 py-2 rounded-lg border font-mono text-xs font-bold active:scale-95 transition-all ${
+                      isDark
+                        ? 'border-zinc-800 bg-zinc-950 text-zinc-400 hover:text-white'
+                        : 'border-zinc-200 bg-white text-zinc-500 hover:text-zinc-900'
+                    }`}
+                  >
+                    CANCEL
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-6 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-mono text-xs font-bold active:scale-[0.98] transition-all shadow-md"
+                  >
+                    DEPLOY AND PUBLISH
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 };
