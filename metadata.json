@@ -1,0 +1,6 @@
+{
+  "name": "Prompt Gallery",
+  "description": "A beautifully curated gallery of high-fidelity AI-generation prompts and imagery, styled in minimalist monochrome with subtle azure accents.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
